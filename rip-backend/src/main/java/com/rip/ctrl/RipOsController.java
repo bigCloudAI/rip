@@ -19,7 +19,7 @@ public class RipOsController {
     	String ip = "ip:" + hostAddress;
     	String requestIp = "reIp:" + request.getLocalAddr();
     	String remoteIp = "remoteIp:" + request.getRemoteHost();
-        return ip + "\n\t" + requestIp + "\n\t" + remoteIp;
+        return ip + "\n\t" + requestIp + "\n\t" + remoteIp+"/////v1";
     }
 
 }
