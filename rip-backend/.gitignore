@@ -1,8 +1,7 @@
 /.mvn
 /.settings
 /target
-.springBeans
-.classpath
+
 
 
 # local env files
@@ -22,3 +21,5 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+.springBeans
+.classpath
