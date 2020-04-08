@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: thinkcloud-cdci-service
+  labels:
+    name: thinkcloud-cdci-service
+spec:
+  type: NodePort     
+  ports:
+  - port: 8080          
+    targetPort: 8080  
+    protocol: TCP
+    nodePort: 33000  
+  selector:
+    app: thinkcloud-cdcipod
+
