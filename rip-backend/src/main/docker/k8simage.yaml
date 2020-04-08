@@ -1,0 +1,6 @@
+Name: 
+  thinkcloud-cdci
+Version: 
+  1
+Command:
+   iotprodeploy.cluster: java -jar /usr/local/lib/thinkcloud-k8score.jar

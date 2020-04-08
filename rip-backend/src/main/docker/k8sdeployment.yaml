@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1 
+kind: Deployment 
+metadata: 
+  name: thinkcloud-cdci 
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: thinkcloud-cdcipod
+    spec:
+      containers:
+        - name: thinkcloud-cdcipod
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: IfNotPresent

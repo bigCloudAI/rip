@@ -1,0 +1,73 @@
+pipeline {
+	parameters {    
+			booleanParam(name: 'loadCode', defaultValue: true, description: '下载代码?')
+			booleanParam(name: 'buildPackage', defaultValue: true, description: '重新编译?')
+			booleanParam(name: 'buildImageAndPush', defaultValue: true, description: '构建镜像和提交仓库?')
+			choice(name: 'registerUrl', choices: ['iotprodeploy.register'],description: '选择仓库?')
+			booleanParam(name: 'deploy', defaultValue: true, description: '部署?')
+			choice(name: 'k8sCluster', choices: ['iotprodeploy.cluster'], description: '选择集群?（集群主机需可以访问仓库）')
+	}
+	environment {
+			svnCredent=''
+			svnUrl=''
+		}
+
+	agent any
+	stages {
+		stage ('loadCode') {
+			when{
+			   expression { params.loadCode}
+			}
+			steps {
+				echo 'loadCode ...'
+				sh 'echo ${svnUrl} ${svnTag}'
+		        checkout([$class: 'SubversionSCM', additionalCredentials: [], excludedCommitMessages: '', excludedRegions: '',
+		        excludedRevprop: '', excludedUsers: '', filterChangelog: false, ignoreDirPropChanges: false, includedRegions: '',
+		        locations: [[cancelProcessOnExternalsFail: true, credentialsId: 'svnsecret', 
+		        depthOption: 'infinity', ignoreExternalsOption: true, local: '.', 
+		        remote: 'http://192.168.81.101:2443/svn/GC-NGNMP/COMMON/THINK-CLOUD/trunk/src/thinkcloud-cdci/@HEAD']],
+		        quietOperation: true, workspaceUpdater: [$class: 'UpdateWithRevertUpdater']])
+			}
+		}
+
+		stage ('buildPackage') {
+			when{
+			   expression { params.buildPackage}
+			}
+				agent {
+					docker {
+						image 'library/maven:3-alpine'
+						args ' --privileged -t -v /root/.m2:/root/.m2'
+						reuseNode true
+					}
+				}
+			steps {
+				dir ('.') {
+					sh '/usr/bin/mvn -B -e -U -DskipTests clean package'
+				}
+			}
+		}
+		stage ('buildImageAndPush') {
+			when{
+			   expression { params.buildImageAndPush}
+			}
+			steps {
+			   dir ('.') {
+			   sh 'sh /usr/jenkins/deploywithcode/tcloudk8simagebuild.sh  ${BUILD_ID} ${registerUrl}  ${k8sCluster}'
+				}
+			}
+
+		}
+		
+
+		stage ('deploy') {
+		   when {
+				expression { params.deploy }
+		    }
+				steps {
+				sh 'sh /usr/jenkins/deploywithcode/tcloudk8sdeploy.sh  ${BUILD_ID} ${registerUrl} ${k8sCluster}'
+					}
+		
+		  }
+		}
+}
