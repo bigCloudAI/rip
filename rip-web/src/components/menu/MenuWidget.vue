@@ -27,6 +27,11 @@
               </div>  
               <div style="background-color:gray;height:1px;margin-top:13px"></div>
               <div style="padding-left: 2px;margin-top:13px">
+                  <el-link :underline="false" style="font-size:15px;">
+                    <router-link to="/author"><i class="fa fa-address-book" style="width:28px"></i><span>作者</span></router-link> 
+                  </el-link>
+              </div>  
+              <div style="padding-left: 2px;margin-top:13px">
                    <el-link :underline="false" style="font-size:15px;">
                      <i class="fa fa-cogs" style="width:28px"></i><span>系统设置</span>
                    </el-link>

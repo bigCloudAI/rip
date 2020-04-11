@@ -38,7 +38,7 @@ const router = new VueRouter({
   routes
 })
 router.beforeEach((to,from,next) => {
-  if(store.state.userInfo || to.path === "/login"|| to.path === "/author"){  
+  if(store.state.userInfo || to.path === "/login"|| to.path === "/author"||to.path ==="/about"){  
     next();
   }else{
     next({
